@@ -223,6 +223,20 @@ if __name__ == '__main__':
             print('')
     util.print_separator()
 
+    data = None
+    with open(MINECRAFT_DIR + '/launcher_profiles.json', 'r') as file:
+        data = json.load(file)
+    if not forge:
+        data['profiles'][profile_name] = {'name': profile_name, 'lastVersionId': profile_name,
+                                          'javaArgs': '-Xmx1G -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true',
+                                          'playerUUID': ''}
+    if forge:
+        data['profiles']['Forge']['name'] = profile_name
+        data['profiles']['Forge']['javaArgs'] = '-Xmx1G -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true'
+        data['profiles'][profile_name] = data['profiles'].pop('Forge')
+    with open(MINECRAFT_DIR + '/launcher_profiles.json', 'w') as file:
+        file.write(json.dumps(data, file, indent=4))
+
     print('Completed successfully!')
     util.exit()
 
